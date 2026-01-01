@@ -1,3 +1,9 @@
+export async function handleStats(req, res, store) {
+  const notes = await store.getNotes();
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ totalNotes: notes.length }));
+}
+
 // -------------------------------------------------------------
 // Pagination & Limit Settings
 // -------------------------------------------------------------
@@ -67,6 +73,7 @@ export const routes = [
   { method: 'GET', path: '/api/health', handler: handleHealth },
   { method: 'GET', path: '/api/notes', handler: handleGetNotes },
   { method: 'POST', path: '/api/notes', handler: handleCreateNote },
+  { method: 'GET', path: '/api/stats', handler: handleStats },
 ];
 
 // -------------------------------------------------------------
