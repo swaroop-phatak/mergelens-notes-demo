@@ -12,17 +12,17 @@ async function seed() {
   const now = new Date().toISOString();
   await store.addNote({
     id: '1',
-    text: 'Welcome to MergeLens notes demo',
+    body: 'Welcome to MergeLens notes demo',
     createdAt: now,
   });
   await store.addNote({
     id: '2',
-    text: 'Redis storage over raw RESP without dependencies',
+    body: 'Redis storage over raw RESP without dependencies',
     createdAt: now,
   });
   await store.addNote({
     id: '3',
-    text: 'Live preview verifies candidate vs main side by side',
+    body: 'Live preview verifies candidate vs main side by side',
     createdAt: now,
   });
 

@@ -1,7 +1,12 @@
+export async function handleVersion(req, res) {
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ version: '1.2.0' }));
+}
+
 // -------------------------------------------------------------
 // Pagination & Limit Settings
 // -------------------------------------------------------------
-export const PAGE_SIZE = 10;
+export const PAGE_SIZE = 20;
 
 // -------------------------------------------------------------
 // Core MergeLens Notes API Routes
@@ -41,14 +46,14 @@ export async function handleGetNotes(req, res, store) {
 export async function handleCreateNote(req, res, store) {
   try {
     const body = await readBody(req);
-    if (!body || typeof body.text !== 'string' || body.text.trim().length === 0) {
+    if (!body || typeof body.body !== 'string' || body.body.trim().length === 0) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'Field "text" is required and must be non-empty' }));
+      res.end(JSON.stringify({ error: 'Field "body" is required and must be non-empty' }));
       return;
     }
     const note = {
       id: Date.now().toString(),
-      text: body.text.trim(),
+      body: body.body.trim(),
       createdAt: new Date().toISOString(),
     };
     await store.addNote(note);
@@ -67,6 +72,7 @@ export const routes = [
   { method: 'GET', path: '/api/health', handler: handleHealth },
   { method: 'GET', path: '/api/notes', handler: handleGetNotes },
   { method: 'POST', path: '/api/notes', handler: handleCreateNote },
+  { method: 'GET', path: '/api/version', handler: handleVersion },
 ];
 
 // -------------------------------------------------------------

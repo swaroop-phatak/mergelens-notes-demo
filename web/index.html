@@ -49,7 +49,7 @@
           for (const note of notes) {
             const li = document.createElement('li');
             li.className = 'note-item';
-            li.textContent = note.text;
+            li.textContent = note.body;
             notesList.appendChild(li);
           }
         } catch (err) {
@@ -65,7 +65,7 @@
           const res = await fetch('/api/notes', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text }),
+            body: JSON.stringify({ body: text }),
           });
           if (!res.ok) throw new Error('HTTP ' + res.status);
           input.value = '';

@@ -80,20 +80,20 @@ describe('Notes API Handlers (In-Memory)', () => {
     const req = mockReq({
       method: 'POST',
       url: '/api/notes',
-      body: { text: 'Hello MergeLens' },
+      body: { body: 'Hello MergeLens' },
     });
     const res = mockRes();
     await dispatchRequest(req, res, store);
     const { statusCode, body } = await res.waitForResponse();
     expect(statusCode).toBe(201);
     const json = JSON.parse(body);
-    expect(json.text).toBe('Hello MergeLens');
+    expect(json.body).toBe('Hello MergeLens');
     expect(json.id).toBeDefined();
     expect(json.createdAt).toBeDefined();
   });
 
   it('GET /api/notes retrieves saved notes', async () => {
-    await store.addNote({ id: 'n1', text: 'Existing Note', createdAt: new Date().toISOString() });
+    await store.addNote({ id: 'n1', body: 'Existing Note', createdAt: new Date().toISOString() });
     const req = mockReq({ method: 'GET', url: '/api/notes' });
     const res = mockRes();
     await dispatchRequest(req, res, store);
@@ -101,7 +101,7 @@ describe('Notes API Handlers (In-Memory)', () => {
     expect(statusCode).toBe(200);
     const json = JSON.parse(body);
     expect(json.length).toBe(1);
-    expect(json[0].text).toBe('Existing Note');
+    expect(json[0].body).toBe('Existing Note');
   });
 
   it('POST /api/notes rejects missing text with 400', async () => {
@@ -110,16 +110,16 @@ describe('Notes API Handlers (In-Memory)', () => {
     await dispatchRequest(req, res, store);
     const { statusCode, body } = await res.waitForResponse();
     expect(statusCode).toBe(400);
-    expect(JSON.parse(body).error).toMatch(/Field "text" is required/);
+    expect(JSON.parse(body).error).toMatch(/Field "body" is required/);
   });
 
   it('POST /api/notes rejects empty string text with 400', async () => {
-    const req = mockReq({ method: 'POST', url: '/api/notes', body: { text: '   ' } });
+    const req = mockReq({ method: 'POST', url: '/api/notes', body: { body: '   ' } });
     const res = mockRes();
     await dispatchRequest(req, res, store);
     const { statusCode, body } = await res.waitForResponse();
     expect(statusCode).toBe(400);
-    expect(JSON.parse(body).error).toMatch(/Field "text" is required/);
+    expect(JSON.parse(body).error).toMatch(/Field "body" is required/);
   });
 
   it('POST /api/notes handles malformed JSON body with 400', async () => {
