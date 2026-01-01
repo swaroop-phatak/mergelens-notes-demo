@@ -75,7 +75,18 @@ export const routes = [
 // Spaced >= 10 lines from core routes table above
 // -------------------------------------------------------------
 
-export const extendedRoutes = [];
+
+export async function handlePinned(req, res, store) {
+  const notes = await store.getNotes();
+  // returns pinned note or first note
+  const pinned = notes.length > 0 ? notes[0] : { id: '0', text: 'No notes available' };
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify(pinned));
+}
+
+export const extendedRoutes = [
+  { method: 'GET', path: '/api/pinned', handler: handlePinned },
+];
 
 // -------------------------------------------------------------
 // Request Dispatcher
