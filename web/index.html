@@ -14,6 +14,11 @@
       </header>
 
       <main>
+      <section class="card pinned-widget">
+        <h2>Pinned Note (Quick Glance)</h2>
+        <div id="pinned-display" class="note-item">Loading pinned...</div>
+      </section>
+
         <section class="card">
           <h2>Add a Note</h2>
           <form id="note-form">
@@ -76,6 +81,23 @@
       });
 
       document.addEventListener('DOMContentLoaded', loadNotes);
+
+    async function loadPinnedNote() {
+      try {
+        const res = await fetch('/api/notes');
+        const notes = await res.json();
+        const display = document.getElementById('pinned-display');
+        if (notes.length > 0) {
+          display.textContent = 'Pinned: ' + notes[0].text;
+        } else {
+          display.textContent = 'No pinned notes.';
+        }
+      } catch (err) {
+        document.getElementById('pinned-display').textContent = 'Error: ' + err.message;
+      }
+    }
+    document.addEventListener('DOMContentLoaded', loadPinnedNote);
+
     </script>
   </body>
 </html>
