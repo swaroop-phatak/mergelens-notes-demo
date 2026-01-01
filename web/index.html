@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MergeLens Notes Demo</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>MergeLens Notes</h1>
+        <p class="subtitle">Live Preview Archetype &mdash; Vanilla SPA + Node HTTP + Redis</p>
+      </header>
+
+      <main>
+        <section class="card">
+          <h2>Add a Note</h2>
+          <form id="note-form">
+            <input type="text" id="note-input" placeholder="Type a note here..." required />
+            <button type="submit" id="add-btn">Save Note</button>
+          </form>
+        </section>
+
+        <section class="card">
+          <h2>All Notes</h2>
+          <ul id="notes-list" class="notes-list">
+            <li class="loading">Loading notes...</li>
+          </ul>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const form = document.getElementById('note-form');
+      const input = document.getElementById('note-input');
+      const notesList = document.getElementById('notes-list');
+
+      async function loadNotes() {
+        try {
+          const res = await fetch('/api/notes');
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const notes = await res.json();
+          notesList.innerHTML = '';
+          if (notes.length === 0) {
+            notesList.innerHTML = '<li class="empty">No notes yet. Add one above!</li>';
+            return;
+          }
+          for (const note of notes) {
+            const li = document.createElement('li');
+            li.className = 'note-item';
+            li.textContent = note.text;
+            notesList.appendChild(li);
+          }
+        } catch (err) {
+          notesList.innerHTML = '<li class="error">Failed to load notes: ' + err.message + '</li>';
+        }
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const text = input.value.trim();
+        if (!text) return;
+        try {
+          const res = await fetch('/api/notes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text }),
+          });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          input.value = '';
+          await loadNotes();
+        } catch (err) {
+          alert('Could not save note: ' + err.message);
+        }
+      });
+
+      document.addEventListener('DOMContentLoaded', loadNotes);
+    </script>
+  </body>
+</html>

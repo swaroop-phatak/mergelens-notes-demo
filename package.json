@@ -1,0 +1,13 @@
+{
+  "name": "notes-demo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run --reporter=junit --outputFile=junit.xml"
+  },
+  "devDependencies": {
+    "vitest": "5.0.3",
+    "vite": "^6.4.0"
+  }
+}

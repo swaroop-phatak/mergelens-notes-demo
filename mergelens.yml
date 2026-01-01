@@ -1,0 +1,42 @@
+version: 1
+project:
+  kind: node
+  image: node22-alpine
+install:
+  command:
+    - npm
+    - install
+    - --no-audit
+    - --no-fund
+test:
+  command:
+    - npx
+    - vitest
+    - run
+    - --reporter=junit
+    - --outputFile=/output/junit.xml
+  junitFile: junit.xml
+preview:
+  kind: compose
+  services:
+    - name: api
+      role: app
+      build:
+        context: api
+        dockerfile: Dockerfile
+      port: 3000
+    - name: db
+      role: db
+      image: redis
+  routes:
+    - path: /api
+      service: api
+  seed:
+    service: api
+    command:
+      - node
+      - seed.mjs
+  health:
+    path: /api/health
+  staticDir: web
+  ttlMinutes: 30
