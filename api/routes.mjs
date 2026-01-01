@@ -75,7 +75,16 @@ export const routes = [
 // Spaced >= 10 lines from core routes table above
 // -------------------------------------------------------------
 
-export const extendedRoutes = [];
+
+export async function handleInfo(req, res, store) {
+  const notes = await store.getNotes();
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ totalNotes: notes.length, status: 'healthy' }));
+}
+
+export const extendedRoutes = [
+  { method: 'GET', path: '/api/info', handler: handleInfo },
+];
 
 // -------------------------------------------------------------
 // Request Dispatcher
